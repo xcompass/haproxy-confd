@@ -15,12 +15,12 @@ RUN wget -t 5 https://github.com/kelseyhightower/confd/releases/download/v${conf
 RUN /usr/sbin/addgroup haproxy
 RUN /usr/sbin/adduser -D -H -S -G haproxy haproxy
 
-ADD entrypoint.sh /entrypoint.sh
-ADD confd /etc/confd
-
-RUN chmod +x /entrypoint.sh
-
 # Expose ports.
 EXPOSE 8080
 
 ENTRYPOINT ["/entrypoint.sh"]
+
+ADD entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+ADD confd /etc/confd
