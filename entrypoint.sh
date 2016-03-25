@@ -23,4 +23,4 @@ done
 
 echo "[haproxy-confd] Initial HAProxy config created. Starting confd"
 
-confd -node "$ETCD_NODE"
+confd -node "$ETCD_NODE" -watch
