@@ -23,4 +23,9 @@ done
 
 echo "[haproxy-confd] Initial HAProxy config created. Starting confd"
 
-confd -node "$ETCD_NODE" -watch
+# first check if we're passing flags,
+if [ "${1:0:1}" = '-'  ]; then
+    set -- confd "$@"
+fi
+
+exec "$@"
