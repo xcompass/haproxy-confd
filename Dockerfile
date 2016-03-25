@@ -1,29 +1,26 @@
-FROM yaronr/debian-wheezy
+FROM haproxy:alpine
 
-MAINTAINER yaronr
+MAINTAINER Pan Luo <pan.luo@ubc.ca>
 
-ENV ETCD_NODE 172.17.42.1:4001
-ENV confd_ver 0.7.1
+ENV ETCD_NODE 172.17.42.1:2379
+ENV confd_ver 0.11.0
 
-ENTRYPOINT ["/entrypoint.sh"]
+#sed -i 's/^ENABLED=.*/ENABLED=1/' /etc/default/haproxy
 
-RUN	(echo "deb http://cdn.debian.net/debian wheezy-backports main" > /etc/apt/sources.list.d/backports.list) && \
-	DEBIAN_FRONTEND=noninteractive apt-get update -y && \
-    DEBIAN_FRONTEND=noninteractive apt-get install -yq --no-install-recommends \
-    	ca-certificates \
-    	libssl1.0.0 \
-		software-properties-common python-software-properties \
-		haproxy -t wheezy-backports && \
-		apt-get remove --purge -y software-properties-common python-software-properties && \
-		apt-get clean && \
-		rm -rf /var/cache/apt/* /var/lib/apt/lists/* && \
-		sed -i 's/^ENABLED=.*/ENABLED=1/' /etc/default/haproxy
+RUN apk add --no-cache --update openssl
 
-RUN wget --progress=bar:force --retry-connrefused -t 5 https://github.com/kelseyhightower/confd/releases/download/v${confd_ver}/confd-${confd_ver}-linux-amd64 -O /bin/confd && \
-	chmod +x /bin/confd
+RUN wget -t 5 https://github.com/kelseyhightower/confd/releases/download/v${confd_ver}/confd-${confd_ver}-linux-amd64 -O /bin/confd && \
+    chmod +x /bin/confd
+
+RUN /usr/sbin/addgroup haproxy
+RUN /usr/sbin/adduser -D -H -S -G haproxy haproxy
 
 ADD entrypoint.sh /entrypoint.sh
 ADD confd /etc/confd
-	
+
+RUN chmod +x /entrypoint.sh
+
 # Expose ports.
 EXPOSE 8080
+
+ENTRYPOINT ["/entrypoint.sh"]
