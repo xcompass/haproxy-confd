@@ -4,7 +4,8 @@ keys = [
   "tcp-services"
 ]
 
-owner = "haproxy"
+uid = 0
+gid = 0
 mode = "0644"
 src = "haproxy.tmpl"
 dest = "/usr/local/etc/haproxy/haproxy.cfg"
