@@ -16,7 +16,7 @@ curl() {
 
 check(){
     printf "Checking $3..."
-    if [[ "$1" != "$2" ]] ; then
+    if [ "$1" != "$2" ] ; then
         printf "Failed\n"
         printf "Wrong test output\n"
         printf "Was: $1\n"
