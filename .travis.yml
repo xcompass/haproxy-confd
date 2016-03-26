@@ -1,0 +1,15 @@
+sudo: required
+
+language: bash
+
+services:
+  - docker
+
+env:
+  - ETCD_NOTE=http://127.0.0.1:2379 HOST_IP=127.0.0.1
+
+before_install:
+  - docker build -t haproxy-confd .
+
+script:
+  - sh test.sh

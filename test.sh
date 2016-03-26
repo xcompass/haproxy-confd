@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ETCD_VER=2.3.0
-HOST_IP=172.17.0.1
+[ -z "$HOST_IP" ] &&  HOST_IP=172.17.0.1
 
 #set -e
 etcdctl() {
@@ -61,7 +61,7 @@ etcdctl set /services/srv1/upstreams/host1 localhost:1234
 sleep 2
 
 TARGET=srv1.local:80
-check "$(curl --resolve "$TARGET:$HOST_IP" http://$TARGET)" "201" "$TARGET"
+check "$(curl --resolve "$TARGET:$HOST_IP" http://$TARGET)" "200" "$TARGET"
 
 # Missing hosts
 etcdctl set /services/srv2/scheme http
