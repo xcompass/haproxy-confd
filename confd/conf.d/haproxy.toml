@@ -1,7 +1,8 @@
 [template]
 keys = [
   "services",
-  "tcp-services"
+  "tcp-services",
+  "config"
 ]
 
 uid = 0
