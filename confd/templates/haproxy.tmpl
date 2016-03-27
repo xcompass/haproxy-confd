@@ -117,4 +117,4 @@ listen MyStats
     http-request auth unless auth_ok
 
 userlist stats-auth
-    user admin insecure-password p4ss
+    user admin insecure-password {{getv "/config/stats/password" "p4ss"}}
