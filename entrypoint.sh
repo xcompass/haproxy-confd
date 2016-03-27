@@ -1,11 +1,5 @@
 #!/bin/bash
 
-if [ -z "$ETCD_NODE" ]
-then
-  echo "Missing ETCD_NODE environment variable."
-  exit 1
-fi
-
 # convert comma separated node list to confd parameters, e.g. -node=node1 -node=node2 ...
 IFS=',' read -ra NODES <<< "$ETCD_NODE"
 NODES_PARAMS=$(printf -- "-node=%s " "${NODES[@]}")
