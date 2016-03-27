@@ -2,9 +2,13 @@
 
 if [ -z "$ETCD_NODE" ]
 then
-  echo "Missing ETCD_NODE env var"
+  echo "Missing ETCD_NODE environment variable."
   exit 1
 fi
+
+# convert comma separated node list to confd parameters, e.g. -node=node1 -node=node2 ...
+IFS=',' read -ra NODES <<< "$ETCD_NODE"
+NODES_PARAMS=$(printf -- "-node=%s " "${NODES[@]}")
 
 set -eo pipefail
 
@@ -20,7 +24,7 @@ if [ "$1" = 'confd' ]; then
 
     # Loop until confd has updated the haproxy config
     n=0
-    until confd -onetime -node "$ETCD_NODE"; do
+    until confd -onetime $NODES_PARAMS; do
         if [ "$n" -eq "4" ];  then echo "Failed to start due to config error"; exit 1; fi
         echo "[haproxy-confd] waiting for confd to refresh haproxy.cfg"
         n=$((n+1))
@@ -28,7 +32,7 @@ if [ "$1" = 'confd' ]; then
     done
 
     echo "[haproxy-confd] Initial HAProxy config created. Starting confd"
-    exec "$@" -node "$ETCD_NODE"
+    exec "$@" $NODES_PARAMS
 fi
 
 exec "$@"
