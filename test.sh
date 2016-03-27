@@ -53,7 +53,7 @@ docker run -d \
     -p 443:443\
     -e SSL_PATH=/keys \
     haproxy-confd \
-    -interval 1 > /dev/null 2>&1
+    -interval 1
 
 # Happy path
 etcdctl set /services/srv1/upstreams/host1 localhost:1234
