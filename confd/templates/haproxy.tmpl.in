@@ -36,11 +36,11 @@ frontend http-in
     bind *:80
     reqadd X-Forwarded-Proto:\ http
 
-    {{range $service := lsdir "/services"}}
+    {{range $service := lsdir "%%PREFIX%%/services"}}
 
-      {{$schemedir := printf "/services/%s/scheme" $service}}
+      {{$schemedir := printf "%%PREFIX%%/services/%s/scheme" $service}}
       {{$scheme := getv $schemedir "http"}}
-      {{$upstreamsdir := printf "/services/%s/upstreams" $service}}
+      {{$upstreamsdir := printf "%%PREFIX%%/services/%s/upstreams" $service}}
 
       {{if ls $upstreamsdir }}
     acl host_{{$service}} hdr_beg(host) -i {{$service}}
@@ -51,16 +51,16 @@ frontend http-in
       {{end}}
     {{end}}
 
-{{if exists "/config/services/enable_ssl"}}
+{{if exists "%%PREFIX%%/config/services/enable_ssl"}}
 frontend https-in
     bind *:443 ssl crt /keys
     reqadd X-Forwarded-Proto:\ https
 
-    {{range $service := lsdir "/services"}}
+    {{range $service := lsdir "%%PREFIX%%/services"}}
 
-      {{$schemedir := printf "/services/%s/scheme" $service}}
+      {{$schemedir := printf "%%PREFIX%%/services/%s/scheme" $service}}
       {{$scheme := getv $schemedir "http"}}
-      {{$upstreamsdir := printf "/services/%s/upstreams" $service}}
+      {{$upstreamsdir := printf "%%PREFIX%%/services/%s/upstreams" $service}}
 
       {{if and (or (eq $scheme "https") (eq $scheme "http-and-https")) (ls $upstreamsdir) }}
     acl host_{{$service}} hdr_beg(host) -i {{$service}}
@@ -72,10 +72,10 @@ frontend https-in
     {{end}}
 {{end}}
 
-{{range $service := lsdir "/services"}}
-{{$schemedir := printf "/services/%s/scheme" $service}}
+{{range $service := lsdir "%%PREFIX%%/services"}}
+{{$schemedir := printf "%%PREFIX%%/services/%s/scheme" $service}}
 {{$scheme := getv $schemedir "http"}}
-{{$upstreamsdir := printf "/services/%s/upstreams" $service}}
+{{$upstreamsdir := printf "%%PREFIX%%/services/%s/upstreams" $service}}
 {{if ls $upstreamsdir}}
 backend {{$service}}
     balance leastconn
@@ -94,12 +94,12 @@ backend {{$service}}
 {{end}}
 
 
-{{range $name := lsdir "/tcp-services"}}
+{{range $name := lsdir "%%PREFIX%%/tcp-services"}}
 listen {{$name}}
     mode tcp
-    bind {{printf "/tcp-services/%s/ports" $name | getv}}
-    {{range $upstream := ls (printf "/tcp-services/%s/upstreams" $name)}}
-    server {{$upstream}} {{printf "/tcp-services/%s/upstreams/%s" $name $upstream | getv}} check
+    bind {{printf "%%PREFIX%%/tcp-services/%s/ports" $name | getv}}
+    {{range $upstream := ls (printf "%%PREFIX%%/tcp-services/%s/upstreams" $name)}}
+    server {{$upstream}} {{printf "%%PREFIX%%/tcp-services/%s/upstreams/%s" $name $upstream | getv}} check
     {{end}}
 {{end}}
 
@@ -117,4 +117,4 @@ listen MyStats
     http-request auth unless auth_ok
 
 userlist stats-auth
-    user admin insecure-password {{getv "/config/stats/password" "p4ss"}}
+    user admin insecure-password {{getv "%%PREFIX%%/config/stats/password" "p4ss"}}

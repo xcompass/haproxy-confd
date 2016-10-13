@@ -1,8 +1,8 @@
 [template]
 keys = [
-  "services",
-  "tcp-services",
-  "config"
+  "%%PREFIX%%/services",
+  "%%PREFIX%%/tcp-services",
+  "%%PREFIX%%/config"
 ]
 
 uid = 0

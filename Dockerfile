@@ -4,6 +4,7 @@ MAINTAINER Pan Luo <pan.luo@ubc.ca>
 
 ENV ETCD_NODE http://172.17.0.1:2379
 ENV confd_ver 0.12.0-alpha3
+ENV KEY_PREFIX ""
 
 RUN apk add --no-cache --update openssl bash
 
