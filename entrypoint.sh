@@ -13,8 +13,8 @@ fi
 
 if [ "$1" = 'confd' ]; then
     # process the template with environment variables
-    sed -e "s|%%PREFIX%%|$KEY_PREFIX|" /etc/confd/conf.d/haproxy.toml.in > /etc/confd/conf.d/haproxy.toml
-    sed -e "s|%%PREFIX%%|$KEY_PREFIX|" /etc/confd/templates/haproxy.tmpl.in > /etc/confd/templates/haproxy.tmpl
+    sed -e "s|%%PREFIX%%|$KEY_PREFIX|" /etc/confd/conf.d/in/haproxy.toml.in > /etc/confd/conf.d/haproxy.toml
+    sed -e "s|%%PREFIX%%|$KEY_PREFIX|" /etc/confd/templates/in/haproxy.tmpl.in > /etc/confd/templates/haproxy.tmpl
 
     #confd will start haproxy, since conf will be different than existing (which is null)
 
