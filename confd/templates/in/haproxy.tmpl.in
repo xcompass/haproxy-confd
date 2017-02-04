@@ -94,14 +94,24 @@ backend {{$service}}
 {{end}}
 
 
-{{range $name := lsdir "%%PREFIX%%/tcp-services"}}
-listen {{$name}}
+{{range $tcpservice := lsdir "%%PREFIX%%/tcp-services"}}
+{{$tcpupstreamsdir := printf "%%PREFIX%%/tcp-services/%s/upstreams" $tcpservice}}
+{{$tcpserviceport := printf "%%PREFIX%%/tcp-services/%s/ports" $tcpservice}}
+{{if ls $tcpupstreamsdir}}
+listen {{$tcpservice}}
     mode tcp
-    bind {{printf "%%PREFIX%%/tcp-services/%s/ports" $name | getv}}
-    {{range $upstream := ls (printf "%%PREFIX%%/tcp-services/%s/upstreams" $name)}}
-    server {{$upstream}} {{printf "%%PREFIX%%/tcp-services/%s/upstreams/%s" $name $upstream | getv}} check
+    bind *:{{getv $tcpserviceport}}
+
+    {{range $tcpupstream := ls $tcpupstreamsdir}}
+    {{$tcphost := printf "%s/%s" $tcpupstreamsdir $tcpupstream }}
+    {{/* it seems ls $tcpupstreamsdir will get an extra "services" key, might be bug in confd */}}
+    {{if exists $tcphost}}
+    server {{$tcpupstream}} {{getv $tcphost}} check
+    {{end}}
     {{end}}
 {{end}}
+{{end}}
+
 
 listen MyStats
     mode http
