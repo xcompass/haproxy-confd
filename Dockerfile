@@ -1,4 +1,4 @@
-FROM haproxy:alpine
+FROM haproxy:1.6.11-alpine
 
 MAINTAINER Pan Luo <pan.luo@ubc.ca>
 
